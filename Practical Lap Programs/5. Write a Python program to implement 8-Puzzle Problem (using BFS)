@@ -1,0 +1,49 @@
+from collections import deque
+
+def is_goal(state):
+    return state == [1, 2, 3, 4, 5, 6, 7, 8, 0]
+
+def get_moves(state):
+    moves = []
+    idx = state.index(0)
+    row, col = idx // 3, idx % 3
+
+    def swap_and_create(new_idx):
+        new_state = state.copy()
+        new_state[idx], new_state[new_idx] = new_state[new_idx], new_state[idx]
+        return new_state
+
+    if row > 0:
+        moves.append(swap_and_create(idx - 3))
+    if row < 2:
+        moves.append(swap_and_create(idx + 3))
+    if col > 0:
+        moves.append(swap_and_create(idx - 1))
+    if col < 2:
+        moves.append(swap_and_create(idx + 1))
+
+    return moves
+
+def bfs(start):
+    visited = set()
+    queue = deque()
+    queue.append(start)
+
+    while queue:
+        state = queue.popleft()
+        print(state)
+        if tuple(state) in visited:
+            continue
+
+        visited.add(tuple(state))
+
+        if is_goal(state):
+            print("Goal state reached!")
+            return
+
+        for move in get_moves(state):
+            if tuple(move) not in visited:
+                queue.append(move)
+
+start_state = [1, 2, 3, 4, 0, 6, 7, 5, 8]
+bfs(start_state)
