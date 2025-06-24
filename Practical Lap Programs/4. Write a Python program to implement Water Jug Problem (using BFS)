@@ -1,0 +1,38 @@
+from collections import deque
+
+def water_jug_problem():
+    visited = set()
+    queue = deque()
+
+    # (x, y) means x-liter in Jug1 and y-liter in Jug2
+    queue.append((0, 0))
+
+    while queue:
+        state = queue.popleft()
+        x, y = state
+
+        if (x, y) in visited:
+            continue
+
+        print(f"Jug1: {x}L, Jug2: {y}L")
+        visited.add(state)
+
+        if x == 2 or y == 2:
+            print("Goal reached!")
+            return
+
+        # Possible moves:
+        moves = [
+            (4, y),  # Fill Jug1
+            (x, 3),  # Fill Jug2
+            (0, y),  # Empty Jug1
+            (x, 0),  # Empty Jug2
+            (min(x + y, 4), y - (min(4 - x, y))),  # Pour Jug2 → Jug1
+            (x - (min(x, 3 - y)), min(x + y, 3))   # Pour Jug1 → Jug2
+        ]
+
+        for move in moves:
+            if move not in visited:
+                queue.append(move)
+
+water_jug_problem()
