@@ -1,0 +1,43 @@
+from queue import PriorityQueue
+
+def a_star(start, goal, graph):
+    open_set = PriorityQueue()
+    open_set.put((0, start))
+    came_from = {}
+    g_score = {node: float('inf') for node in graph}
+    g_score[start] = 0
+
+    def heuristic(a, b):
+        return abs(ord(a) - ord(b))
+
+    while not open_set.empty():
+        _, current = open_set.get()
+
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            return path[::-1]
+
+        for neighbor in graph[current]:
+            temp_g_score = g_score[current] + graph[current][neighbor]
+
+            if temp_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = temp_g_score
+                f_score = temp_g_score + heuristic(neighbor, goal)
+                open_set.put((f_score, neighbor))
+
+    return None
+
+# Example graph
+graph = {
+    'A': {'B': 1, 'C': 3},
+    'B': {'D': 1},
+    'C': {'D': 1},
+    'D': {}
+}
+
+print("\nA* Path:", a_star('A', 'D', graph))
